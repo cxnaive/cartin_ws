@@ -1,0 +1,8 @@
+/*/*/build
+/*/*/log
+/src/rmcv_bringup/launch/local.launch.py
+/build
+/install
+/log
+/.vscode
+

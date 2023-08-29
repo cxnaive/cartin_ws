@@ -1,0 +1,14 @@
+/opencv_cam:
+  ros__parameters:
+    device_name: /dev/cam_rgb
+    camera_name: cam_rgb
+    #YUYV/UYVY
+    codec: MJPG
+    fps: 60.0
+    image_width: 1920
+    image_height: 1080
+    auto_white_balance: false
+    auto_exposure: false
+    exposure: 100
+    white_balance: 4000
+    show_img: false

@@ -1,0 +1,14 @@
+/opencv_cam:
+  ros__parameters:
+    device_name: /dev/video0
+    camera_name: test_cam
+    #YUYV/UYVY
+    codec: MJPG
+    fps: 30.0
+    image_width: 1280
+    image_height: 720
+    auto_white_balance: false
+    auto_exposure: true
+    exposure: 100
+    white_balance: 4000
+    show_img: false

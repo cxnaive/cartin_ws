@@ -111,7 +111,7 @@ void RadarNode::pub_radar_data() {
                     power.values.push_back(it->second.data[i].power);
                     alpha.values.push_back(it->second.data[i].alpha);
                     beta.values.push_back(it->second.data[i].beta);
-                    std::cout << it->second.data[i].power << std::endl;
+                    // std::cout << it->second.data[i].power << std::endl;
                 }
                 frameDetection.channels.push_back(doppler);
                 frameDetection.channels.push_back(range);

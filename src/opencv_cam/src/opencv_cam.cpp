@@ -84,7 +84,16 @@ void print_param(std::shared_ptr<cv::VideoCapture> handle, int flag, std::string
 void OpencvCameraNode::init_camera() {
     handle = std::make_shared<cv::VideoCapture>();
     // open
-    handle->open(params.device_name);
+    bool success_open = false;
+    while (rclcpp::ok() && !success_open) {
+        success_open = handle->open(params.device_name);
+        if (!success_open) {
+            RCLCPP_ERROR(get_logger(), "Failed to open Device: %s", params.device_name.c_str());
+            RCLCPP_WARN(get_logger(), "Retrying....");
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+    }
+
     // basic
     check_set(handle, cv::CAP_PROP_FOURCC,
               cv::VideoWriter::fourcc(params.codec[0], params.codec[1], params.codec[2],

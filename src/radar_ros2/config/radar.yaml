@@ -1,0 +1,5 @@
+/radar_ros2:
+  ros__parameters:
+    radar_name: radar
+    fps: 100.0
+    power_threshold: 20.0

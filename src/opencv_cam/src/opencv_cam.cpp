@@ -134,6 +134,7 @@ void OpencvCameraNode::grab() {
     // 创建消息
     sensor_msgs::msg::Image image_msg;
     image_msg.encoding = "bgr8";
+    image_msg.header.frame_id = params.camera_name;
     image_msg.height = params.image_height;
     image_msg.width = params.image_width;
     image_msg.step = params.image_width * 3;
@@ -152,6 +153,7 @@ void OpencvCameraNode::grab() {
             cv::imshow("grab", img_origin);
             cv::waitKey(1);
         }
+        image_msg.header.stamp = this->now();
         image_pub.publish(image_msg);
     }
 };

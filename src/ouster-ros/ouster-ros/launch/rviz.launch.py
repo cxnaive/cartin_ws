@@ -14,7 +14,7 @@ def generate_launch_description():
     """Generate launch description for rviz"""
     ouster_ros_pkg_dir = get_package_share_directory('ouster_ros')
     print(ouster_ros_pkg_dir)
-    default_rviz_config = Path(ouster_ros_pkg_dir) / 'config' / 'viz.rviz'
+    default_rviz_config = Path(ouster_ros_pkg_dir) / 'config' / 'viz-reliable.rviz'
     print(default_rviz_config)
     rviz_config = LaunchConfiguration('rviz_config')
     rviz_config_arg = DeclareLaunchArgument(

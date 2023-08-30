@@ -6,3 +6,4 @@
 /.vscode
 *.csv
 /radar_*
+os-*.json

@@ -2,7 +2,7 @@ ouster/os_driver:
   ros__parameters:
     # sensor_hostname[required]: hostname or IP address of the sensor (IP4 or
     # IP6).
-    sensor_hostname: ''
+    sensor_hostname: 'os-122212001075.local'
     # udp_dest[optional]: hostname or multicast group IP where the sensor will
     # send UDP data packets.
     udp_dest: ''
@@ -41,11 +41,11 @@ ouster/os_driver:
     # lidar_port[optional]: port value should be in the range [0, 65535]. If you
     # use 0 as the port value then the first avaliable port number will be
     # assigned.
-    lidar_port: 0
+    lidar_port: 7052
     # imu_port[optional]: port value should be in the range [0, 65535]. If you
     # use 0 as the port value then the first avaliable port number will be
     # assigned.
-    imu_port: 0
+    imu_port: 7053
     # sensor_frame[optional]: name to use when referring to the sensor frame.
     sensor_frame: os_sensor
     # lidar_frame[optional]: name to use when referring to the lidar frame.
@@ -66,4 +66,4 @@ ouster/os_driver:
     # use_system_default_qos[optional]: if false, data are published with sensor
     # data QoS. This is preferrable for production but default QoS is needed for
     # rosbag. See: https://github.com/ros2/rosbag2/issues/125
-    use_system_default_qos: false
+    use_system_default_qos: true

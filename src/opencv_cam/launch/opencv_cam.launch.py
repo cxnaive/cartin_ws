@@ -9,7 +9,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     params_file = os.path.join(
-        get_package_share_directory('opencv_cam'), 'config', 'thermal.yaml')
+        get_package_share_directory('opencv_cam'), 'config', 'rgb.yaml')
 
     camera_info_url = 'package://opencv_cam/config/camera_info.yaml'
 

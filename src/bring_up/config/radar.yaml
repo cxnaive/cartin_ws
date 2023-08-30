@@ -1,4 +1,4 @@
-/radar_ros2:
+/radar:
   ros__parameters:
     radar_name: radar
     fps: 50.0

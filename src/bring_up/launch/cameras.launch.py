@@ -12,14 +12,15 @@ sys.path.append(os.path.join(
     get_package_share_directory('bring_up'), 'launch'))
 
 
-def generate_launch_description():
+def get_cameras_container():
     rgb_params = os.path.join(get_package_share_directory(
         'bring_up'), 'config', 'rgb.yaml')
     thermal_params = os.path.join(get_package_share_directory(
         'bring_up'), 'config', 'thermal.yaml')
-    
-    rgb_caminfo = os.path.join('package://bring_up/config','caminfo_rgb.yaml')
-    thermal_caminfo = os.path.join('package://bring_up/config','caminfo_thermal.yaml')
+
+    rgb_caminfo = os.path.join('package://bring_up/config', 'caminfo_rgb.yaml')
+    thermal_caminfo = os.path.join(
+        'package://bring_up/config', 'caminfo_thermal.yaml')
 
     cameras_container = ComposableNodeContainer(
         name='cameras_container',
@@ -50,7 +51,10 @@ def generate_launch_description():
         emulate_tty=True,
         on_exit=Shutdown(),
     )
+    return cameras_container
 
+
+def generate_launch_description():
     return LaunchDescription([
-        cameras_container
+        get_cameras_container()
     ])

@@ -1,12 +1,14 @@
 #include <assert.h>
 
+#include <cstdio>
+#include <cstdlib>
 #include <opencv_cam/opencv_cam.hpp>
 #include <opencv_cam/perf.hpp>
 using namespace opencv_cam;
 
 OpencvCameraNode::OpencvCameraNode(const rclcpp::NodeOptions& options)
     : Node("opencv_cam", options) {
-    RCLCPP_INFO(this->get_logger(), "Starting HikCameraNode!");
+    RCLCPP_INFO(this->get_logger(), "Starting OpenCVCameraNode!");
     load_params();
     // 创建pub
     bool use_intra = options.use_intra_process_comms();
@@ -84,15 +86,19 @@ void print_param(std::shared_ptr<cv::VideoCapture> handle, int flag, std::string
 void OpencvCameraNode::init_camera() {
     handle = std::make_shared<cv::VideoCapture>();
     // open
-    bool success_open = false;
-    while (rclcpp::ok() && !success_open) {
-        success_open = handle->open(params.device_name);
-        if (!success_open) {
-            RCLCPP_ERROR(get_logger(), "Failed to open Device: %s", params.device_name.c_str());
+    bool success_found = false;
+    while (rclcpp::ok() && !success_found) {
+        int res = system(("ls " + params.device_name).c_str());
+        success_found = res == 0;
+        if (!success_found) {
+            RCLCPP_ERROR(get_logger(), "Failed to find Device: %s", params.device_name.c_str());
             RCLCPP_WARN(get_logger(), "Retrying....");
+            handle->release();
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
+
+    handle->open(params.device_name);
 
     // basic
     check_set(handle, cv::CAP_PROP_FOURCC,

@@ -53,7 +53,6 @@ def get_cameras_container():
     )
     return cameras_container
 
-
 def generate_launch_description():
     return LaunchDescription([
         get_cameras_container()

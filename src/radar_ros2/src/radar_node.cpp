@@ -99,7 +99,7 @@ void RadarNode::pub_radar_data() {
                 alpha.name = "Alpha";
                 beta.name = "Beta";
 
-                for (int i = 0; i < it->second.data.size(); ++i) {
+                for (int i = 0; i < (int)it->second.data.size(); ++i) {
                     if(it->second.data[i].power < power_threshold) continue;
                     coord.x = it->second.data[i].z;
                     coord.y = -it->second.data[i].x;

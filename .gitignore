@@ -1,10 +1,8 @@
-/*/*/build
-/*/*/log
-/src/rmcv_bringup/launch/local.launch.py
+**/build
+**/log
 /build
 /install
 /log
 /.vscode
 *.csv
 /radar_*
-

@@ -28,7 +28,9 @@ class RadarNode : public rclcpp::Node {
     std::string radar_name;
     double fps;
     double power_threshold;
+    double distance_threshold;
     bool use_sensor_data_qos;
+    oculii::ModeCommand radar_mode;
 
     // pubs
     rclcpp::Publisher<sensor_msgs::msg::PointCloud>::SharedPtr pcl_pub;

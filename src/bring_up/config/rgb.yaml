@@ -11,5 +11,5 @@
     auto_exposure: false
     exposure: 100
     white_balance: 4000
-    show_img: true
+    show_img: false
     use_sensor_data_qos: false

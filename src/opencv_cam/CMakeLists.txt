@@ -14,14 +14,12 @@ set(link ${OpenCV_LIBS} ${link})
 
 # find ament_cmake
 find_package(ament_cmake_auto REQUIRED)
-find_package(rm_interfaces REQUIRED)
 ament_auto_find_build_dependencies()
 
 
 # find src
 file(GLOB_RECURSE HkCamera_src "src/*.cpp")
 ament_auto_add_library(${PROJECT_NAME} SHARED ${HkCamera_src})
-ament_target_dependencies(${PROJECT_NAME} rm_interfaces)
 target_link_libraries(${PROJECT_NAME} ${link})
 
 rclcpp_components_register_node(${PROJECT_NAME}

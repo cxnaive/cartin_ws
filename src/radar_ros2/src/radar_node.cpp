@@ -1,5 +1,6 @@
-#include <radar_ros2/radar_node.hpp>
+#include <assert.h>
 
+#include <radar_ros2/radar_node.hpp>
 using namespace radar_ros2;
 
 RadarNode::RadarNode(const rclcpp::NodeOptions &options) : Node("radar_ros2", options) {
@@ -10,11 +11,30 @@ RadarNode::RadarNode(const rclcpp::NodeOptions &options) : Node("radar_ros2", op
     radar_name = declare_parameter("radar_name", "test_radar");
     fps = declare_parameter("fps", 10.0);
     power_threshold = declare_parameter("power_threshold", 10.0);
-    
+    distance_threshold = declare_parameter("distance_threshold", 5.0);
+    int modeint = declare_parameter("mode", 0);
+
+    switch (modeint) {
+        case 0:
+            radar_mode = oculii::ModeCommand::SENSOR_MODE_0;
+            break;
+        case 1:
+            radar_mode = oculii::ModeCommand::SENSOR_MODE_1;
+            break;
+        case 2:
+            radar_mode = oculii::ModeCommand::SENSOR_MODE_2;
+            break;
+        default:
+            assert(false && "Invalid mode for Radar!");
+            break;
+    }
+
     RCLCPP_INFO(get_logger(), "Config Path: %s", config_path.c_str());
     RCLCPP_INFO(get_logger(), "Radar Name: %s", radar_name.c_str());
     RCLCPP_INFO(get_logger(), "FPS: %lf", fps);
     RCLCPP_INFO(get_logger(), "power_threshold: %lf", power_threshold);
+    RCLCPP_INFO(get_logger(), "distance_threshold: %lf", distance_threshold);
+    RCLCPP_INFO(get_logger(), "Radar_mode: %d", modeint);
 
     bool use_intra = options.use_intra_process_comms();
     if (!use_intra) {
@@ -45,6 +65,10 @@ RadarNode::RadarNode(const rclcpp::NodeOptions &options) : Node("radar_ros2", op
                      oculii::ErrorToString(status).c_str());
         return;
     }
+
+    std::vector<int> IDs{1};
+    std::vector<oculii::ModeCommand> modes{radar_mode};
+    handle->SendModeSwitchCmd(IDs, modes);
 
     status = handle->StartRadarReceive();
     if (status == oculii::RadarErrorCode::SUCCESS)
@@ -100,10 +124,12 @@ void RadarNode::pub_radar_data() {
                 beta.name = "Beta";
 
                 for (int i = 0; i < (int)it->second.data.size(); ++i) {
-                    if(it->second.data[i].power < power_threshold) continue;
+                    if (it->second.data[i].power < power_threshold) continue;
                     coord.x = it->second.data[i].z;
                     coord.y = -it->second.data[i].x;
                     coord.z = -it->second.data[i].y;
+                    double distance = sqrt(coord.x * coord.x + coord.y * coord.y + coord.z * coord.z);
+                    if(distance > distance_threshold) continue;
                     frameDetection.points.push_back(coord);
 
                     doppler.values.push_back(it->second.data[i].doppler);

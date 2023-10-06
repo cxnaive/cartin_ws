@@ -1,2 +1,2 @@
-KERNEL=="video*", ATTRS{idVendor}=="0002", ATTRS{idProduct}=="0001", MODE:="0777", ATTRS{serial}=="200901010001", SYMLINK+="cam_rgb"
-KERNEL=="video*", ATTRS{idVendor}=="04b4", ATTRS{idProduct}=="02f8", ATTR{index}=="0", MODE:="0777", ATTRS{product}=="AT600", SYMLINK+="cam_thermal"
+KERNEL=="video*", MODE:="0777", ATTRS{serial}=="200901010001", SYMLINK+="cam_rgb"
+KERNEL=="video*", ATTR{index}=="0", MODE:="0777", ATTRS{product}=="AT600", SYMLINK+="cam_thermal"

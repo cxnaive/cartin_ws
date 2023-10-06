@@ -55,6 +55,7 @@ class OpencvCameraNode : public rclcpp::Node {
     // 相机信息发布
     std::unique_ptr<camera_info_manager::CameraInfoManager> camera_info_manager;
     sensor_msgs::msg::CameraInfo camera_info_msg;
+    rclcpp::Publisher<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_pub;
 
     std::atomic_bool grab_on;
     void load_params();

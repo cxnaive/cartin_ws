@@ -19,6 +19,13 @@ def generate_launch_description():
         )
     )
 
+    lidar_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('bring_up'),'launch','lidar.launch.py')
+        )
+    )
+
     ld.add_action(cameras_launch)
     ld.add_action(radar_launch)
+    ld.add_action(lidar_launch)
     return ld

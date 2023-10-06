@@ -24,9 +24,15 @@ OpencvCameraNode::OpencvCameraNode(const rclcpp::NodeOptions& options)
     // load camera info
     camera_info_manager =
         std::make_unique<camera_info_manager::CameraInfoManager>(this, params.camera_name);
-    if (camera_info_manager->validateURL(params.camera_info_url)) {
-        camera_info_manager->loadCameraInfo(params.camera_info_url);
+    if (camera_info_manager->validateURL(params.camera_info_url) && camera_info_manager->loadCameraInfo(params.camera_info_url)) {
         camera_info_msg = camera_info_manager->getCameraInfo();
+        if (params.use_sensor_data_qos) {
+            camera_info_pub = create_publisher<sensor_msgs::msg::CameraInfo>(
+                "/" + params.camera_name + "/camera_info", rclcpp::SensorDataQoS());
+        } else {
+            camera_info_pub = create_publisher<sensor_msgs::msg::CameraInfo>(
+                "/" + params.camera_name + "/camera_info", 100);
+        }
     } else {
         RCLCPP_WARN(this->get_logger(), "Invalid camera info URL: %s",
                     params.camera_info_url.c_str());
@@ -170,6 +176,10 @@ void OpencvCameraNode::grab() {
         }
         image_msg.header.stamp = this->now();
         image_pub.publish(image_msg);
+        if(camera_info_pub){
+            camera_info_msg.header.stamp = image_msg.header.stamp;
+            camera_info_pub->publish(camera_info_msg);
+        }
     }
 };
 

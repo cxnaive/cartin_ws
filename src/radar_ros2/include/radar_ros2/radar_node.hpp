@@ -6,7 +6,9 @@
 #include <rclcpp/utilities.hpp>
 #include <geometry_msgs/msg/point32.hpp>
 #include <sensor_msgs/msg/image.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 #include <sensor_msgs/msg/point_cloud.hpp>
+#include <sensor_msgs/point_cloud_conversion.hpp>
 // opencv
 #include <opencv2/opencv.hpp>
 
@@ -33,7 +35,7 @@ class RadarNode : public rclcpp::Node {
     oculii::ModeCommand radar_mode;
 
     // pubs
-    rclcpp::Publisher<sensor_msgs::msg::PointCloud>::SharedPtr pcl_pub;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pcl_pub;
 
     // handle
     std::shared_ptr<oculii::RadarSystem> handle;

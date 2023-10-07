@@ -49,8 +49,8 @@ OpencvCameraNode::~OpencvCameraNode() { stop_grab(); }
 void OpencvCameraNode::load_params() {
     params.camera_name = this->declare_parameter("camera_name", "camera_raw");
     params.device_name = this->declare_parameter("device_name", "video_test");
-    params.codec = this->declare_parameter("codec", "XXXX");  // should be MJEG/YUYV like
-    assert(params.codec.length() == 4);
+    params.codec = this->declare_parameter("codec", "XXXX");  // should be MJEG/YUYV/UYVY like
+    assert(params.codec == "MJPG" || params.codec == "YUYV" || params.codec == "UYVY");
     params.camera_info_url =
         this->declare_parameter("camera_info_url", "package://opencv_cam/config/camera_info.yaml");
     params.image_width = this->declare_parameter("image_width", 0);
@@ -105,6 +105,10 @@ void OpencvCameraNode::init_camera() {
     }
 
     handle->open(params.device_name);
+    //fix v4l backend issues when reading yuv images
+    if(params.codec == "YUVY" || params.codec == "UYVY"){
+        handle->set(cv::CAP_PROP_CONVERT_RGB,0);
+    }
 
     // basic
     check_set(handle, cv::CAP_PROP_FOURCC,
@@ -161,12 +165,21 @@ void OpencvCameraNode::grab() {
     image_msg.step = params.image_width * 3;
     image_msg.data.resize(params.image_height * params.image_width * 3);
     // zero-copy mat
+    cv::Mat img_handle;
     cv::Mat img_origin(image_msg.height, image_msg.width, CV_8UC3, image_msg.data.data());
     Perf grab_perf(params.camera_name, 500);
     Event grab_event;
     grab_event.start();
     while (rclcpp::ok() && grab_on) {
-        handle->read(img_origin);
+        if(params.codec == "YUVY"){
+            handle->read(img_handle);
+            cv::cvtColor(img_handle,img_origin,cv::COLOR_YUV2BGR_YUYV);
+        } else if (params.codec == "UYVY") {
+            handle->read(img_handle);
+            cv::cvtColor(img_handle,img_origin,cv::COLOR_YUV2BGR_UYVY);
+        } else if (params.codec == "MJPG"){
+            handle->read(img_origin);
+        }
         grab_event.end();
         grab_perf.update(grab_event.duration());
         grab_event.start();

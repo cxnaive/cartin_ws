@@ -42,7 +42,6 @@ def generate_launch_description():
         name='os_sensor',
         namespace=ouster_ns,
         parameters=[params_file],
-        extra_arguments=[{'use_intra_process_comms': True}]
     )
 
     os_cloud = ComposableNode(
@@ -51,7 +50,6 @@ def generate_launch_description():
         name='os_cloud',
         namespace=ouster_ns,
         parameters=[params_file],
-        extra_arguments=[{'use_intra_process_comms': True}]
     )
 
     os_image = ComposableNode(
@@ -60,7 +58,6 @@ def generate_launch_description():
         name='os_image',
         namespace=ouster_ns,
         parameters=[params_file],
-        extra_arguments=[{'use_intra_process_comms': True}]
     )
 
     os_container = ComposableNodeContainer(

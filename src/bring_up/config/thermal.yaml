@@ -1,11 +1,20 @@
 /cam_thermal:
   ros__parameters:
     device_name: /dev/cam_thermal
-    camera_name: cam_thermal
+    camera_name: thermal_raw
     #YUVY/UYVY
     codec: UYVY
     fps: 25.0
     image_width: 1280
     image_height: 512
+    show_img: false
+    use_sensor_data_qos: false
+
+/thermal_imgproc:
+  ros__parameters:
+    image_topic: thermal_raw
+    camera_name: cam_thermal
+    image_width_origin: 1280
+    image_height_origin: 512
     show_img: false
     use_sensor_data_qos: false

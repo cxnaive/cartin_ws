@@ -42,6 +42,15 @@ def get_cameras_container():
                 plugin='opencv_cam::OpencvCameraNode',
                 name='cam_thermal',
                 parameters=[thermal_params, {
+                        'camera_info_url': ""
+                }],
+                extra_arguments=[{'use_intra_process_comms': True}]
+            ),
+            ComposableNode(
+                package='thermal_imgproc',
+                plugin='thermal_imgproc::ThermalImageProcNode',
+                name='thermal_imgproc',
+                parameters=[thermal_params, {
                         'camera_info_url': thermal_caminfo
                 }],
                 extra_arguments=[{'use_intra_process_comms': True}]

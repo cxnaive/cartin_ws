@@ -7,3 +7,6 @@
 *.csv
 /radar_*
 os-*.json
+/run
+/bags/*
+!/bags/record.sh

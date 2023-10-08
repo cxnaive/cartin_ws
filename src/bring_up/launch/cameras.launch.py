@@ -42,7 +42,7 @@ def get_cameras_container():
                 plugin='opencv_cam::OpencvCameraNode',
                 name='cam_thermal',
                 parameters=[thermal_params, {
-                        'camera_info_url': ""
+                        'camera_info_url': "none"
                 }],
                 extra_arguments=[{'use_intra_process_comms': True}]
             ),

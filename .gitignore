@@ -9,4 +9,4 @@
 os-*.json
 /run
 /bags/*
-!/bags/record.sh
+!/bags/*.sh

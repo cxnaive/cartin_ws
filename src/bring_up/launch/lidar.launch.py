@@ -99,6 +99,6 @@ def generate_launch_description():
         # rviz_enable_arg,
         # rviz_launch,
         os_container,
-        sensor_configure_cmd,
-        TimerAction(period=1.0, actions=[sensor_activate_cmd])
+        TimerAction(period=1.0, actions=[sensor_configure_cmd]),
+        TimerAction(period=2.0, actions=[sensor_activate_cmd])
     ])

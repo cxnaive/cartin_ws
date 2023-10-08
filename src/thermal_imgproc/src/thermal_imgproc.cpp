@@ -78,6 +78,10 @@ void ThermalImageProcNode::proc(const sensor_msgs::msg::Image::SharedPtr img_msg
     cv::Mat img_output(image_msg.height, image_msg.width, CV_8UC3, image_msg.data.data());
     img_roi.copyTo(img_output);
     image_pub.publish(std::move(image_msg));
+    if(camera_info_pub){
+        camera_info_msg.header.stamp = image_msg.header.stamp;
+        camera_info_pub->publish(camera_info_msg);
+    }
 }
 
 #include "rclcpp_components/register_node_macro.hpp"

@@ -24,7 +24,7 @@ OpencvCameraNode::OpencvCameraNode(const rclcpp::NodeOptions& options)
     // load camera info
     camera_info_manager =
         std::make_unique<camera_info_manager::CameraInfoManager>(this, params.camera_name);
-    if (camera_info_manager->validateURL(params.camera_info_url) && camera_info_manager->loadCameraInfo(params.camera_info_url)) {
+    if (params.camera_info_url != "none" && camera_info_manager->validateURL(params.camera_info_url) && camera_info_manager->loadCameraInfo(params.camera_info_url)) {
         camera_info_msg = camera_info_manager->getCameraInfo();
         if (params.use_sensor_data_qos) {
             camera_info_pub = create_publisher<sensor_msgs::msg::CameraInfo>(

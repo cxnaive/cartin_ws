@@ -24,7 +24,7 @@ class RadarNode : public rclcpp::Node {
     ~RadarNode() override;
    private:
     std::thread pub_thread;
-    std::thread monitor_thread;
+    std::thread pub_enhanced_thread;
     // params
     std::string config_path;
     std::string radar_name;
@@ -35,14 +35,15 @@ class RadarNode : public rclcpp::Node {
     oculii::ModeCommand radar_mode;
 
     // pubs
-    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pcl_pub;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pcl_pub, pcl_enhanced_pub;
 
     // handle
     std::shared_ptr<oculii::RadarSystem> handle;
     bool init_success;
 
     std::atomic_bool pub_on;
-    void pub_radar_data();
+    void pub_radar_enhanced();
+    void pub_radar();
 };
 
 }  // namespace radar_ros2

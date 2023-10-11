@@ -46,9 +46,13 @@ RadarNode::RadarNode(const rclcpp::NodeOptions& options) : Node("radar_ros2", op
     // create pub
     if (use_sensor_data_qos) {
         pcl_pub = create_publisher<sensor_msgs::msg::PointCloud2>("/" + radar_name,
-                                                                 rclcpp::SensorDataQoS());
+                                                                  rclcpp::SensorDataQoS());
+        pcl_enhanced_pub = create_publisher<sensor_msgs::msg::PointCloud2>(
+            "/" + radar_name + "/enhanced", rclcpp::SensorDataQoS());
     } else {
         pcl_pub = create_publisher<sensor_msgs::msg::PointCloud2>("/" + radar_name, 100);
+        pcl_enhanced_pub =
+            create_publisher<sensor_msgs::msg::PointCloud2>("/" + radar_name + "/enhanced", 100);
     }
 
     // create handle
@@ -84,13 +88,17 @@ RadarNode::RadarNode(const rclcpp::NodeOptions& options) : Node("radar_ros2", op
     RCLCPP_INFO(get_logger(), "Radar Device frame rate %d!", radar_frame_rate);
 
     pub_on = true;
-    pub_thread = std::thread(&RadarNode::pub_radar_data, this);
+    pub_thread = std::thread(&RadarNode::pub_radar, this);
+    pub_enhanced_thread = std::thread(&RadarNode::pub_radar_enhanced, this);
 }
 
 RadarNode::~RadarNode() {
     pub_on = false;
     if (pub_thread.joinable()) {
         pub_thread.join();
+    }
+    if (pub_enhanced_thread.joinable()){
+        pub_enhanced_thread.join();
     }
 
     if (handle) {
@@ -99,12 +107,74 @@ RadarNode::~RadarNode() {
     }
 }
 
-void RadarNode::pub_radar_data() {
+void RadarNode::pub_radar() {
+    /* Declare Containers for Point Cloud */
+    std::map<int, oculii::RadarDetectionPacket> pcl;
+
+    /* Set Publish Rate */
+    rclcpp::WallRate loop_rate(fps);
+
+    while (rclcpp::ok() && pub_on) {
+        /* Get PCL data */
+        oculii::RadarErrorCode pclStatus = handle->GetPointcloud(pcl);
+
+        /*Publish detection data for each sensor respectively*/
+        if (pclStatus == oculii::RadarErrorCode::SUCCESS) {
+            sensor_msgs::msg::PointCloud frameDetection;
+            sensor_msgs::msg::PointCloud2 frameDetection2;
+            frameDetection.header.frame_id = radar_name;
+            frameDetection.header.stamp = now();
+
+            for (auto it = pcl.begin(); it != pcl.end(); ++it) {
+                geometry_msgs::msg::Point32 coord;
+                sensor_msgs::msg::ChannelFloat32 doppler, range, power, alpha, beta;
+                doppler.name = "Doppler";
+                range.name = "Range";
+                power.name = "Power";
+                alpha.name = "Alpha";
+                beta.name = "Beta";
+
+                auto packet = it->second;
+                for (int i = 0; i < (int)packet.data.size(); ++i) {
+                    if (packet.data[i].power >= power_threshold) {
+                        coord.x = packet.data[i].z;
+                        coord.y = -packet.data[i].x;
+                        coord.z = -packet.data[i].y;
+                        double distance =
+                            sqrt(coord.x * coord.x + coord.y * coord.y + coord.z * coord.z);
+                        if (distance > distance_threshold) continue;
+                        frameDetection.points.push_back(coord);
+
+                        doppler.values.push_back(packet.data[i].doppler);
+                        range.values.push_back(packet.data[i].range);
+                        power.values.push_back(packet.data[i].power);
+                        alpha.values.push_back(packet.data[i].alpha);
+                        beta.values.push_back(packet.data[i].beta);
+                    }
+                }
+
+                frameDetection.channels.push_back(doppler);
+                frameDetection.channels.push_back(range);
+                frameDetection.channels.push_back(power);
+                frameDetection.channels.push_back(alpha);
+                frameDetection.channels.push_back(beta);
+            }
+            sensor_msgs::convertPointCloudToPointCloud2(frameDetection, frameDetection2);
+            frameDetection2.header.stamp = frameDetection.header.stamp;
+            frameDetection2.header.frame_id = frameDetection.header.frame_id;
+            pcl_pub->publish(std::move(frameDetection2));
+        } else {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            // RCLCPP_ERROR(get_logger(),"fuck~!!");
+            continue;
+        }
+        loop_rate.sleep();
+    }
+}
+
+void RadarNode::pub_radar_enhanced() {
     /* Declare Containers for Point Cloud */
     std::map<int, std::vector<oculii::RadarDetectionPacket> > pcl;
-
-    /* Declare Containers for tracker */
-    std::map<int, oculii::RadarTrackerPacket> trk;
 
     /* Set Publish Rate */
     rclcpp::WallRate loop_rate(fps);
@@ -119,7 +189,7 @@ void RadarNode::pub_radar_data() {
             sensor_msgs::msg::PointCloud2 frameDetection2;
             frameDetection.header.frame_id = radar_name;
             frameDetection.header.stamp = now();
-            
+
             for (auto it = pcl.begin(); it != pcl.end(); ++it) {
                 geometry_msgs::msg::Point32 coord;
                 sensor_msgs::msg::ChannelFloat32 doppler, range, power, alpha, beta;
@@ -155,10 +225,10 @@ void RadarNode::pub_radar_data() {
                 frameDetection.channels.push_back(alpha);
                 frameDetection.channels.push_back(beta);
             }
-            sensor_msgs::convertPointCloudToPointCloud2(frameDetection,frameDetection2);
+            sensor_msgs::convertPointCloudToPointCloud2(frameDetection, frameDetection2);
             frameDetection2.header.stamp = frameDetection.header.stamp;
             frameDetection2.header.frame_id = frameDetection.header.frame_id;
-            pcl_pub->publish(std::move(frameDetection2));
+            pcl_enhanced_pub->publish(std::move(frameDetection2));
         } else {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
             continue;

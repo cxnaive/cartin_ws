@@ -64,6 +64,11 @@ void ThermalImageProcNode::proc(const sensor_msgs::msg::Image::SharedPtr img_msg
         cv::imshow("proc_img",img_roi);
         cv::waitKey(1);
     }
+    // delay test
+    // static Perf delay_perf("delay_perf",1000);
+    // double delay_ms = (this->now().nanoseconds() - rclcpp::Time(img_msg->header.stamp).nanoseconds()) / 1000000.0;
+    // delay_perf.update(delay_ms);
+
     // 创建消息
     sensor_msgs::msg::Image image_msg;
     image_msg.encoding = "bgr8";

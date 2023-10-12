@@ -18,7 +18,7 @@ def get_radar_container():
         name='radar_container',
         namespace='',
         package='rclcpp_components',
-        executable='component_container',
+        executable='component_container_isolated',
         composable_node_descriptions=[
             ComposableNode(
                 package='radar_ros2',

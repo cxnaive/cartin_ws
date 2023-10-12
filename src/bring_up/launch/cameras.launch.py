@@ -26,7 +26,7 @@ def get_cameras_container():
         name='cameras_container',
         namespace='',
         package='rclcpp_components',
-        executable='component_container',
+        executable='component_container_isolated',
         composable_node_descriptions=[
             ComposableNode(
                 package='opencv_cam',

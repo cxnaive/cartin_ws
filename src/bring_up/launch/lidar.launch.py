@@ -50,6 +50,7 @@ def generate_launch_description():
         name='os_cloud',
         namespace=ouster_ns,
         parameters=[params_file],
+        extra_arguments=[{'use_intra_process_comms': True}]
     )
 
     os_image = ComposableNode(
@@ -58,13 +59,14 @@ def generate_launch_description():
         name='os_image',
         namespace=ouster_ns,
         parameters=[params_file],
+        extra_arguments=[{'use_intra_process_comms': True}]
     )
 
     os_container = ComposableNodeContainer(
         name='os_container',
         namespace=ouster_ns,
         package='rclcpp_components',
-        executable='component_container_mt',
+        executable='component_container_isolated',
         composable_node_descriptions=[
             os_sensor,
             os_cloud,
@@ -99,6 +101,6 @@ def generate_launch_description():
         # rviz_enable_arg,
         # rviz_launch,
         os_container,
-        TimerAction(period=1.0, actions=[sensor_configure_cmd]),
-        TimerAction(period=2.0, actions=[sensor_activate_cmd])
+        TimerAction(period=5.0, actions=[sensor_configure_cmd]),
+        TimerAction(period=6.0, actions=[sensor_activate_cmd])
     ])

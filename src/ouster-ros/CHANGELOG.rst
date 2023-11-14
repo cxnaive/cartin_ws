@@ -9,7 +9,11 @@ Changelog
   to be applied to all ROS messages the driver generates when ``TIME_FROM_PTP_1588`` timestamp mode
   is used.
 * fix: destagger columns timestamp when generating destaggered point clouds.
-
+* shutdown the driver when unable to connect to the sensor on startup
+* breaking: rename ouster_msgs to ouster_sensor_msgs
+* added the ability to customize the published point clouds(s) to velodyne point cloud format and
+  other common pcl point types.
+* ouster_image_compoenent can operate separately from ouster_cloud_component.
 
 ouster_ros v0.10.0
 ==================

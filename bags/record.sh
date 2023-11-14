@@ -1,1 +1,1 @@
-ros2 bag record -o test /cam_rgb/compressed /cam_thermal/compressed /ouster/imu /ouster/points /radar /radar/enhanced
+ros2 bag record -o test_stable /cam_rgb/compressed /cam_thermal/compressed /ouster/imu /ouster/points /radar /radar/enhanced /tf

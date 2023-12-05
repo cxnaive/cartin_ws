@@ -1,2 +1,2 @@
-KERNEL=="video*", MODE:="0777", ATTRS{serial}=="200901010001", SYMLINK+="cam_rgb"
+KERNEL=="video*", ATTR{index}=="0", MODE:="0777", ATTRS{serial}=="200901010001", SYMLINK+="cam_rgb"
 KERNEL=="video*", ATTR{index}=="0", MODE:="0777", ATTRS{product}=="AT600", SYMLINK+="cam_thermal"

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot name="sensor_suite"
+  xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <link name="base_link" />
+  <link name="os_lidar" />
+  <link name="cam_rgb" />
+  <link name="cam_thermal" />
+  <link name="radar" />
+
+  <joint name="base_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="os_lidar" />
+  </joint>
+
+  <joint name="cam_rgb_joint" type="fixed">
+    <origin xyz="-0.0853979 -0.0093982 -0.1483134" rpy="-1.5891221  0.0018285  1.5661268" />
+    <parent link="os_lidar" />
+    <child link="cam_rgb" />
+  </joint>
+
+  <joint name="cam_thermal_joint" type="fixed">
+    <origin xyz="-0.0917141 -0.0368426 -0.1247703" rpy="-1.5656989  0.0177717  1.5798694" />
+    <parent link="os_lidar" />
+    <child link="cam_thermal" />
+  </joint>
+
+  <joint name="radar_joint" type="fixed">
+    <origin xyz="0.0171912  0.1299679 -0.1794429" rpy="-0.0072347 -0.0022542 -3.1411481" />
+    <parent link="os_lidar" />
+    <child link="radar" />
+  </joint>
+
+</robot>

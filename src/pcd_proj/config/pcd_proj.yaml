@@ -1,6 +1,7 @@
 /pcd_proj:
   ros__parameters:
-    image_topic: "cam_rgb"
-    pcd_topic: "ouster/points"
-    show_img: false
+    camera_name: cam_rgb
+    pcd_topic: ouster/points
+    pub_topic: proj_lidar_rgb
+    show_img: true
     use_sensor_data_qos: false

@@ -24,11 +24,15 @@ execute_process(COMMAND cat "/etc/os-release"
 if(ubuntu_distro MATCHES "22.04")
   message(STATUS "Ubuntu Distro 22.04, Copy OpenCV Libs!")
   install(
+    DIRECTORY oculii_sdk/lib_opencv/
+    DESTINATION lib
+  )
+endif()
+
+install(
   DIRECTORY oculii_sdk/lib/
   DESTINATION lib
 )
-endif()
-
 #Set boost variable
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 find_package(Threads REQUIRED)

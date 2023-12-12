@@ -15,6 +15,19 @@ find_package(OpenCV 4 REQUIRED)
 set(link ${OpenCV_LIBS} ${link})
 
 # Radar SDK
+execute_process(COMMAND cat "/etc/os-release"
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                TIMEOUT 3
+                OUTPUT_VARIABLE ubuntu_distro
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+if(ubuntu_distro MATCHES "22.04")
+  message(STATUS "Ubuntu Distro 22.04, Copy OpenCV Libs!")
+  install(
+  DIRECTORY oculii_sdk/lib/
+  DESTINATION lib
+)
+endif()
 
 #Set boost variable
 find_package(Boost REQUIRED COMPONENTS system filesystem)
@@ -30,12 +43,6 @@ set(include oculii_sdk/include/oculii_core/camera/include ${include})
 set(include oculii_sdk/include/tracker/include ${include})
 set(link -lradar_shared -limu_shared -lcamera_shared -loculii_feat_shared -lTrackerLib ${link})
 
-
-
-install(
-  DIRECTORY oculii_sdk/lib/
-  DESTINATION lib
-)
 
 #find source
 file(GLOB_RECURSE src

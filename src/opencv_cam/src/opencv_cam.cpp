@@ -42,7 +42,7 @@ OpencvCameraNode::OpencvCameraNode(const rclcpp::NodeOptions& options)
     start_grab();
     // monitor_on = true;
     // monitor_thread = std::thread(&HikCameraNode::monitor, this);
-};
+}
 
 OpencvCameraNode::~OpencvCameraNode() { stop_grab(); }
 
@@ -70,7 +70,7 @@ void OpencvCameraNode::load_params() {
     params.sharpness = this->declare_parameter("sharpness", UNDEFINEED);
     params.backlight = this->declare_parameter("backlight", UNDEFINEED);
     params.show_img = this->declare_parameter("show_img", false);
-};
+}
 
 void check_set(std::shared_ptr<cv::VideoCapture> handle, int flag, int value, std::string info = "",
                const rclcpp::Logger& logger = rclcpp::get_logger("normal_logger")) {
@@ -139,7 +139,7 @@ void OpencvCameraNode::init_camera() {
     check_set(handle, cv::CAP_PROP_SHARPNESS, params.sharpness, "sharpness", get_logger());
     check_set(handle, cv::CAP_PROP_BACKLIGHT, params.backlight, "backlight", get_logger());
     print_param(handle, cv::CAP_PROP_APERTURE, "aperture", get_logger());
-    print_param(handle, cv::CAP_PROP_BITRATE, "bitrate", get_logger());
+    // print_param(handle, cv::CAP_PROP_BITRATE, "bitrate", get_logger());
     print_param(handle, cv::CAP_PROP_FORMAT, "Mat format", get_logger());
 };
 

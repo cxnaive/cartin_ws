@@ -5,15 +5,18 @@
 
 from pathlib import Path
 import launch
+import lifecycle_msgs.msg
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node, ComposableNodeContainer
-from launch_ros.descriptions import ComposableNode
+from launch_ros.actions import LifecycleNode
 from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
-                            ExecuteProcess, TimerAction)
+                            RegisterEventHandler, EmitEvent, LogInfo)
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, FindExecutable
-
+from launch.substitutions import LaunchConfiguration
+from launch.events import matches_action
+from launch_ros.events.lifecycle import ChangeState
+from launch_ros.event_handlers import OnStateTransition
 
 def generate_launch_description():
     """
@@ -33,74 +36,70 @@ def generate_launch_description():
     ouster_ns_arg = DeclareLaunchArgument(
         'ouster_ns', default_value='ouster')
 
-    #rviz_enable = LaunchConfiguration('viz')
-    #rviz_enable_arg = DeclareLaunchArgument('viz', default_value='True')
+    rviz_enable = LaunchConfiguration('viz')
+    rviz_enable_arg = DeclareLaunchArgument('viz', default_value='False')
 
-    os_sensor = ComposableNode(
+    os_driver_name = LaunchConfiguration('os_driver_name')
+    os_driver_name_arg = DeclareLaunchArgument(
+        'os_driver_name', default_value='os_driver')
+
+    os_driver = LifecycleNode(
         package='ouster_ros',
-        plugin='ouster_ros::OusterSensor',
-        name='os_sensor',
+        executable='os_driver',
+        name=os_driver_name,
         namespace=ouster_ns,
         parameters=[params_file],
-    )
-
-    os_cloud = ComposableNode(
-        package='ouster_ros',
-        plugin='ouster_ros::OusterCloud',
-        name='os_cloud',
-        namespace=ouster_ns,
-        parameters=[params_file],
-        # extra_arguments=[{'use_intra_process_comms': True}]
-    )
-
-    os_image = ComposableNode(
-        package='ouster_ros',
-        plugin='ouster_ros::OusterImage',
-        name='os_image',
-        namespace=ouster_ns,
-        parameters=[params_file],
-        # extra_arguments=[{'use_intra_process_comms': True}]
-    )
-
-    os_container = ComposableNodeContainer(
-        name='os_container',
-        namespace=ouster_ns,
-        package='rclcpp_components',
-        executable='component_container_mt',
-        composable_node_descriptions=[
-            os_sensor,
-            os_cloud,
-            os_image
-        ],
         output='screen',
     )
 
-    # rviz_launch_file_path = \
-    #     Path(ouster_ros_pkg_dir) / 'launch' / 'rviz.launch.py'
-    # rviz_launch = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([str(rviz_launch_file_path)]),
-    #     condition=IfCondition(rviz_enable)
-    # )
+    sensor_configure_event = EmitEvent(
+        event=ChangeState(
+            lifecycle_node_matcher=matches_action(os_driver),
+            transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
+        )
+    )
 
-    # HACK: to configure and activate the the sensor since state transition
-    # API doesn't seem to support composable nodes yet.
+    sensor_activate_event = RegisterEventHandler(
+        OnStateTransition(
+            target_lifecycle_node=os_driver, goal_state='inactive',
+            entities=[
+                LogInfo(msg="os_driver activating..."),
+                EmitEvent(event=ChangeState(
+                    lifecycle_node_matcher=matches_action(os_driver),
+                    transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
+                )),
+            ],
+            handle_once=True
+        )
+    )
 
-    def invoke_lifecycle_cmd(node_name, verb):
-        ros2_exec = FindExecutable(name='ros2')
-        return ExecuteProcess(
-            cmd=[[ros2_exec, ' lifecycle set ',
-                  ouster_ns, '/', node_name, ' ', verb]],
-            shell=True)
+    sensor_finalized_event = RegisterEventHandler(
+        OnStateTransition(
+            target_lifecycle_node=os_driver, goal_state='finalized',
+            entities=[
+                LogInfo(
+                    msg="Failed to communicate with the sensor in a timely manner."),
+                EmitEvent(event=launch.events.Shutdown(
+                    reason="Couldn't communicate with sensor"))
+            ],
+        )
+    )
 
-    sensor_configure_cmd = invoke_lifecycle_cmd('os_sensor', 'configure')
-    sensor_activate_cmd = invoke_lifecycle_cmd('os_sensor', 'activate')
+    rviz_launch_file_path = \
+        Path(ouster_ros_pkg_dir) / 'launch' / 'rviz.launch.py'
+    rviz_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([str(rviz_launch_file_path)]),
+        condition=IfCondition(rviz_enable)
+    )
 
     return launch.LaunchDescription([
         params_file_arg,
         ouster_ns_arg,
-        # rviz_enable_arg,
-        # rviz_launch,
-        os_container,
-        sensor_configure_cmd,
-        TimerAction(period=6.0, actions=[sensor_activate_cmd])
+        rviz_enable_arg,
+        os_driver_name_arg,
+        rviz_launch,
+        os_driver,
+        sensor_configure_event,
+        sensor_activate_event,
+        sensor_finalized_event
     ])

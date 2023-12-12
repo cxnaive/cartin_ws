@@ -88,11 +88,19 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        base_link:
+          Value: true
+        cam_rgb:
+          Value: true
+        cam_thermal:
+          Value: true
         os_imu:
           Value: true
         os_lidar:
           Value: true
         os_sensor:
+          Value: true
+        radar:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -104,7 +112,14 @@ Visualization Manager:
           os_imu:
             {}
           os_lidar:
-            {}
+            base_link:
+              {}
+            cam_rgb:
+              {}
+            cam_thermal:
+              {}
+            radar:
+              {}
       Update Interval: 0
       Value: true
     - Class: rviz_default_plugins/Image
@@ -138,7 +153,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: os_sensor
+    Fixed Frame: base_link
     Frame Rate: 60
   Name: root
   Tools:
@@ -181,7 +196,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 16.368255615234375
+      Distance: 19.65805435180664
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -196,10 +211,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.610397458076477
+      Pitch: 0.6653973460197449
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.117206335067749
+      Yaw: 3.172205924987793
     Saved: ~
 Window Geometry:
   Displays:

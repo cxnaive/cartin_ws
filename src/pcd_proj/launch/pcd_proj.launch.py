@@ -11,7 +11,7 @@ def generate_launch_description():
     params_file = os.path.join(
         get_package_share_directory('pcd_proj'), 'config', 'pcd_proj.yaml')
     
-    camera_info_url = 'package://bring_up/config/caminfo_rgb.yaml'
+    camera_info_url = 'package://bring_up/config/caminfo_thermal.yaml'
 
     return LaunchDescription([
         SetParameter(name='use_sim_time', value=True),

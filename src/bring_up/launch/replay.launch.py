@@ -51,7 +51,7 @@ def generate_launch_description():
     rgb_republish = Node(
         package='image_transport',
         executable='republish',
-        name='main_cam_image_transform_node',
+        name='main_cam_rgb',
         namespace='sensor',
         arguments=['compressed'],
         remappings=[
@@ -62,7 +62,7 @@ def generate_launch_description():
     thermal_republish = Node(
         package='image_transport',
         executable='republish',
-        name='main_cam_image_transform_node',
+        name='main_cam_thermal',
         namespace='sensor',
         arguments=['compressed'],
         remappings=[

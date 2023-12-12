@@ -61,6 +61,7 @@ void PointcloudProjectionNode::load_params() {
     params.camera_name = this->declare_parameter("camera_name", "camera_name");
     params.pcd_topic = this->declare_parameter("pcd_topic", "pcd_topic");
     params.pub_topic = this->declare_parameter("pub_topic", "pub_topic");
+    params.max_color_distance = this->declare_parameter("max_color_distance", 50.0);
     params.show_img = this->declare_parameter("show_img", false);
     params.use_sensor_data_qos = this->declare_parameter("use_sensor_data_qos", false);
     params.camera_info_url = this->declare_parameter("camera_info_url", "invalid_url");
@@ -127,7 +128,7 @@ void PointcloudProjectionNode::proc(const sensor_msgs::msg::CompressedImage::Sha
     //     auto & fieldnow = pcd_msg->fields[i];
 
     // }
-    for (int i = 0; i < pcd_msg->width * pcd_msg->height; ++i) {
+    for (int i = 0; i < (int)(pcd_msg->width * pcd_msg->height); ++i) {
         // xyz
         float x, y, z;
         memcpy(&x, &pcd_msg->data[pcd_msg->point_step * i], 4);
@@ -146,7 +147,7 @@ void PointcloudProjectionNode::proc(const sensor_msgs::msg::CompressedImage::Sha
         if (p_img[0] < 0 || p_img[0] > img_origin.cols) continue;
         if (p_img[1] < 0 || p_img[1] > img_origin.rows) continue;
 
-        COLOUR p_col = GetColour(p_cam_3.norm(), 0, 50);
+        COLOUR p_col = GetColour(p_cam_3.norm(), 0, params.max_color_distance);
         cv::circle(img_origin, cv::Point2d(p_img[0], p_img[1]), 1.0,
                    cv::Scalar(p_col.b, p_col.g, p_col.r) * 255.0, 1.5, 8);
     }

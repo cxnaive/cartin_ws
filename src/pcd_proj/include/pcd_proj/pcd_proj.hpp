@@ -38,6 +38,7 @@ struct Params {
     std::string pcd_topic;
     std::string pub_topic;
     std::string camera_info_url;
+    double max_color_distance;
     bool show_img;
     bool use_sensor_data_qos;
 };

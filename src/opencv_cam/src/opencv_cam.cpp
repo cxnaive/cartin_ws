@@ -141,19 +141,19 @@ void OpencvCameraNode::init_camera() {
     print_param(handle, cv::CAP_PROP_APERTURE, "aperture", get_logger());
     // print_param(handle, cv::CAP_PROP_BITRATE, "bitrate", get_logger());
     print_param(handle, cv::CAP_PROP_FORMAT, "Mat format", get_logger());
-};
+}
 
 void OpencvCameraNode::start_grab() {
     grab_on = true;
     capture_thread = std::thread(&OpencvCameraNode::grab, this);
-};
+}
 
 void OpencvCameraNode::stop_grab() {
     grab_on = false;
     if (capture_thread.joinable()) {
         capture_thread.join();
     }
-};
+}
 
 void OpencvCameraNode::grab() {
     // 创建消息
@@ -194,7 +194,7 @@ void OpencvCameraNode::grab() {
             camera_info_pub->publish(camera_info_msg);
         }
     }
-};
+}
 
 #include "rclcpp_components/register_node_macro.hpp"
 RCLCPP_COMPONENTS_REGISTER_NODE(opencv_cam::OpencvCameraNode)

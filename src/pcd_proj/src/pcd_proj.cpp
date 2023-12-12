@@ -55,7 +55,7 @@ PointcloudProjectionNode::PointcloudProjectionNode(const rclcpp::NodeOptions& op
         this->get_node_base_interface(), this->get_node_timers_interface());
     tf2_buffer->setCreateTimerInterface(timer_interface);
     tf2_listener = std::make_shared<tf2_ros::TransformListener>(*tf2_buffer);
-};
+}
 
 void PointcloudProjectionNode::load_params() {
     params.camera_name = this->declare_parameter("camera_name", "camera_name");
@@ -68,7 +68,7 @@ void PointcloudProjectionNode::load_params() {
     RCLCPP_INFO(get_logger(), "Camera Name: %s", params.camera_name.c_str());
     RCLCPP_INFO(get_logger(), "Poindcloud Topic: %s", params.pcd_topic.c_str());
     RCLCPP_INFO(get_logger(), "Publish Topic: %s", params.pub_topic.c_str());
-};
+}
 
 typedef struct {
     double r, g, b;

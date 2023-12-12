@@ -40,7 +40,7 @@ ThermalImageProcNode::ThermalImageProcNode(const rclcpp::NodeOptions& options)
         RCLCPP_WARN(this->get_logger(), "Invalid camera info URL: %s",
                     params.camera_info_url.c_str());
     }
-};
+}
 
 void ThermalImageProcNode::load_params() {
     params.camera_name = this->declare_parameter("camera_name", "camera_raw");
@@ -54,7 +54,7 @@ void ThermalImageProcNode::load_params() {
     RCLCPP_INFO(get_logger(), "Image Topic: %s", params.image_topic.c_str());
     RCLCPP_INFO(get_logger(), "image_width_origin: %d", params.image_width_origin);
     RCLCPP_INFO(get_logger(), "image_height_origin: %d", params.image_height_origin);
-};
+}
 
 void ThermalImageProcNode::proc(const sensor_msgs::msg::Image::SharedPtr img_msg){
     // zero-copy mat

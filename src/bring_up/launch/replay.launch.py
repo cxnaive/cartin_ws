@@ -90,7 +90,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        SetParameter(name='use_sim_time', value=True),
+        # SetParameter(name='use_sim_time', value=True),
         robot_state_launch,
         rgb_republish,
         thermal_republish,

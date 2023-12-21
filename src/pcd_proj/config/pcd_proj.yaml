@@ -1,8 +1,8 @@
 /pcd_proj:
   ros__parameters:
     camera_name: cam_thermal
-    pcd_topic: radar
-    pub_topic: proj_radar_thermal
+    pcd_topic: /ouster/points
+    pub_topic: proj_lidar_thermal
     max_color_distance: 50.0
-    show_img: false
+    show_img: true
     use_sensor_data_qos: false

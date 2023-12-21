@@ -9,7 +9,7 @@
     image_height: 480
     auto_white_balance: false
     auto_exposure: false
-    exposure: 100
+    exposure: 1
     white_balance: 4000
     show_img: false
     use_sensor_data_qos: false

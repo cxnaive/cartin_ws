@@ -63,7 +63,7 @@ class RelocalizationPriorMapNode : public rclcpp::Node {
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr priormap_pub;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr lidar_extract_pub;
     // 点云地图
-    pcl::PointCloud<pcl::PointXYZ>::Ptr global_map;
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> global_map;
     std::shared_ptr<PCLAdaptor<pcl::PointXYZ>> map_adaptor;
     std::shared_ptr<PCLAdaptor<pcl::PointXYZ>::KDTree> global_kdtree;
 

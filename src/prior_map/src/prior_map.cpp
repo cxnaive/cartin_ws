@@ -101,7 +101,7 @@ void RelocalizationPriorMapNode::proc(const sensor_msgs::msg::PointCloud2::Share
     Event prior_map_event;
     prior_map_event.start();
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr lidar_cloud =
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> lidar_cloud =
         std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::fromROSMsg(*lidar_pcd, *lidar_cloud);
 
@@ -109,13 +109,13 @@ void RelocalizationPriorMapNode::proc(const sensor_msgs::msg::PointCloud2::Share
     Eigen::Vector4d distance_modifier(params.prior_distance, params.prior_distance,
                                       params.prior_distance, params.prior_distance);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr local_map =
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> local_map =
         std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     // std
     PointCloudInBox_tbb(params.num_threads, *global_map, lidar_pos - distance_modifier,
                         lidar_pos + distance_modifier, *local_map);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr local_map_lidar =
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> local_map_lidar =
         std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::transformPointCloud(*local_map, *local_map_lidar, transform_mat.inverse().cast<float>());
     //
@@ -133,11 +133,11 @@ void RelocalizationPriorMapNode::proc(const sensor_msgs::msg::PointCloud2::Share
     Event search_kdtree_event;
     search_kdtree_event.start();
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr lidar_cloud_extracted_map =
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> lidar_cloud_extracted_map =
         std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    pcl::PointCloud<pcl::PointXYZ>::Ptr lidar_cloud_extracted =
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> lidar_cloud_extracted =
         std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    pcl::PointCloud<pcl::PointXYZ>::Ptr lidar_cloud_map =
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> lidar_cloud_map =
         std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::transformPointCloud(*lidar_cloud, *lidar_cloud_map, transform_mat.cast<float>());
 

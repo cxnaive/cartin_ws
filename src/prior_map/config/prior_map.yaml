@@ -1,0 +1,10 @@
+/prior_map:
+  ros__parameters:
+    lidar_topic: /ouster/points
+    lidar_extract_topic: /extract_lidar_points
+    priormap_topic: /local_priormap
+    map_frame: map
+    prior_distance: 200.0
+    distance_threshold: 0.3
+    num_threads: 4
+    use_sensor_data_qos: false

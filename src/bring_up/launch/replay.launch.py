@@ -7,7 +7,6 @@ from launch.actions import TimerAction, Shutdown
 from ament_index_python import get_package_share_directory
 import os
 
-# 此处修改bag路径
 bag_path = '/home/cx/car_park_0'
 
 # def get_republish_container():
@@ -94,6 +93,6 @@ def generate_launch_description():
         robot_state_launch,
         rgb_republish,
         thermal_republish,
-        rviz_launch,
+        # rviz_launch,
         # TimerAction(period=2.0, actions=[bag_replay])
     ])

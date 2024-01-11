@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <functional>
+#include <pcl/common/transforms.h>
 #include <pcl_utils_tbb.hpp>
 #include <pcl_nanoflann.hpp>
 #include <perf.hpp>

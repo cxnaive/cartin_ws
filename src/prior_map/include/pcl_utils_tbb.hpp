@@ -67,7 +67,7 @@ inline void PointIndicesInBox_tbb(int num_threads, pcl::PointCloud<PointT> &clou
         }
     };
     indices.insert(indices.begin(), con_indices.begin(), con_indices.end());
-};
+}
 
 template <typename PointT>
 inline void DistanceFilter_tbb(int num_threads, const pcl::PointCloud<PointT> &cloud,
